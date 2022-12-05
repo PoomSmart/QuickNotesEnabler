@@ -1,4 +1,6 @@
+#import <MobileGestalt/MobileGestalt.h>
 #import <theos/IOSMacros.h>
+#import "../PSHeader/Misc.h"
 
 static BOOL PhoneTest() {
     return NO;
@@ -40,11 +42,15 @@ static void initControlCenterHooks() {
     %init(ControlCenter);
 }
 
+%group SpringBoard
+
 %hook SYFeatureEligibility
 
 + (BOOL)supportsQuickNote {
     return YES;
 }
+
+%end
 
 %end
 
@@ -83,9 +89,14 @@ static void bundleLoaded(CFNotificationCenterRef center, void *observer, CFStrin
     }
 }
 
+%hookf(bool, MGGetBoolAnswer, CFStringRef question) {
+    return CFStringEqual(question, CFSTR("QuickNoteCapability")) ? true : %orig;
+}
+
 %ctor {
+    %init;
     if (IN_SPRINGBOARD) {
-        %init;
+        %init(SpringBoard);
         if (PhoneTest()) {
             MSImageRef ref = MSGetImageByName("/System/Library/PrivateFrameworks/SpringBoard.framework/SpringBoard");
             SBIsSystemNotesSupported = (BOOL (*)(void))MSFindSymbol(ref, "_SBIsSystemNotesSupported");
