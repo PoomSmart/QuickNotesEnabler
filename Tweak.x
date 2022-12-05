@@ -60,6 +60,10 @@ static void initControlCenterHooks() {
 
 %end
 
+static void initNotesHooks() {
+    %init(Notes);
+}
+
 %group Phone
 
 BOOL (*SBIsSystemNotesSupported)(void);
@@ -74,6 +78,9 @@ static void bundleLoaded(CFNotificationCenterRef center, void *observer, CFStrin
 	if ([bundle.bundleIdentifier isEqualToString:@"com.apple.ControlCenterServices"]) {
 		initControlCenterHooks();
 	}
+    if ([bundle.bundleIdentifier isEqualToString:@"com.apple.NotesSettings"]) {
+        initNotesHooks();
+    }
 }
 
 %ctor {
@@ -88,6 +95,6 @@ static void bundleLoaded(CFNotificationCenterRef center, void *observer, CFStrin
     } else if ([[NSBundle mainBundle].bundleIdentifier isEqualToString:@"com.apple.Preferences"]) {
         CFNotificationCenterAddObserver(CFNotificationCenterGetLocalCenter(), NULL, bundleLoaded, (CFStringRef)NSBundleDidLoadNotification, NULL, CFNotificationSuspensionBehaviorCoalesce);
     } else if ([[NSBundle mainBundle].bundleIdentifier isEqualToString:@"com.apple.mobilenotes"]) {
-        %init(Notes);
+        initNotesHooks();
     }
 }
