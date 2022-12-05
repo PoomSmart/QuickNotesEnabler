@@ -1,5 +1,9 @@
 #import <theos/IOSMacros.h>
 
+static BOOL PhoneTest() {
+    return NO;
+}
+
 extern bool _os_feature_enabled_impl(const char *domain, const char *feature);
 
 %hookf(bool, _os_feature_enabled_impl, const char *domain, const char *feature) {
@@ -20,13 +24,13 @@ extern bool _os_feature_enabled_impl(const char *domain, const char *feature);
     return set;
 }
 
-// + (NSSet *)_supportedDeviceFamiliesForBundleInfoDictionary:(id)infoDict {
-//     NSSet *set = %orig;
-//     if (set.count == 1 && [set containsObject:@(2)] && [infoDict[@"CFBundleIdentifier"] isEqualToString:@"com.apple.mobilenotes.SystemPaperControlCenterModule"]) {
-//         return [NSSet setWithArray:@[@(1), @(2)]];
-//     }
-//     return set;
-// }
++ (NSSet *)_supportedDeviceFamiliesForBundleInfoDictionary:(id)infoDict {
+    NSSet *set = %orig;
+    if (PhoneTest() && set.count == 1 && [set containsObject:@(2)] && [infoDict[@"CFBundleIdentifier"] isEqualToString:@"com.apple.mobilenotes.SystemPaperControlCenterModule"]) {
+        return [NSSet setWithArray:@[@(1), @(2)]];
+    }
+    return set;
+}
 
 %end
 
@@ -44,6 +48,27 @@ static void initControlCenterHooks() {
 
 %end
 
+%group Notes
+
+%hook ICDeviceSupport
+
++ (BOOL)deviceSupportsSystemPaper {
+    return YES;
+}
+
+%end
+
+%end
+
+%group Phone
+
+BOOL (*SBIsSystemNotesSupported)(void);
+%hookf(BOOL, SBIsSystemNotesSupported) {
+    return YES;
+}
+
+%end
+
 static void bundleLoaded(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
 	NSBundle* bundle = (__bridge NSBundle*)(object);
 	if ([bundle.bundleIdentifier isEqualToString:@"com.apple.ControlCenterServices"]) {
@@ -54,8 +79,15 @@ static void bundleLoaded(CFNotificationCenterRef center, void *observer, CFStrin
 %ctor {
     if (IN_SPRINGBOARD) {
         %init;
+        if (PhoneTest()) {
+            MSImageRef ref = MSGetImageByName("/System/Library/PrivateFrameworks/SpringBoard.framework/SpringBoard");
+            SBIsSystemNotesSupported = (BOOL (*)(void))MSFindSymbol(ref, "_SBIsSystemNotesSupported");
+            %init(Phone);
+        }
         initControlCenterHooks();
-    } else {
+    } else if ([[NSBundle mainBundle].bundleIdentifier isEqualToString:@"com.apple.Preferences"]) {
         CFNotificationCenterAddObserver(CFNotificationCenterGetLocalCenter(), NULL, bundleLoaded, (CFStringRef)NSBundleDidLoadNotification, NULL, CFNotificationSuspensionBehaviorCoalesce);
+    } else if ([[NSBundle mainBundle].bundleIdentifier isEqualToString:@"com.apple.mobilenotes"]) {
+        %init(Notes);
     }
 }

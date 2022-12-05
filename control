@@ -1,9 +1,9 @@
 Package: com.ps.quicknotesenabler
 Name: Quick Notes Enabler
-Version: 1.0.0
+Version: 1.1.0
 Architecture: iphoneos-arm
-Description: Enable Quick Notes on unsupported iOS 15 devices
+Description: Enable Quick Notes on unsupported iPadOS 15 devices
 Maintainer: PoomSmart
 Author: PoomSmart
 Section: Tweaks
-Depends: mobilesubstrate (>= 0.9.5000), firmware (>= 15.0)
+Depends: mobilesubstrate (>= 0.9.5000), firmware (>= 15.0), gsc.ipad
