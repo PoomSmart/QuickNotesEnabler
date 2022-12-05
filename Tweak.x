@@ -20,17 +20,13 @@ extern bool _os_feature_enabled_impl(const char *domain, const char *feature);
     return set;
 }
 
-#ifdef IPHONE
-
-+ (NSSet *)_supportedDeviceFamiliesForBundleInfoDictionary:(id)infoDict {
-    NSSet *set = %orig;
-    if (set.count == 1 && [set containsObject:@(2)] && [infoDict[@"CFBundleIdentifier"] isEqualToString:@"com.apple.mobilenotes.SystemPaperControlCenterModule"]) {
-        return [NSSet setWithArray:@[@(1), @(2)]];
-    }
-    return set;
-}
-
-#endif
+// + (NSSet *)_supportedDeviceFamiliesForBundleInfoDictionary:(id)infoDict {
+//     NSSet *set = %orig;
+//     if (set.count == 1 && [set containsObject:@(2)] && [infoDict[@"CFBundleIdentifier"] isEqualToString:@"com.apple.mobilenotes.SystemPaperControlCenterModule"]) {
+//         return [NSSet setWithArray:@[@(1), @(2)]];
+//     }
+//     return set;
+// }
 
 %end
 
