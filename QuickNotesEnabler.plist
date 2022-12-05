@@ -1,1 +1,1 @@
-{ Filter = { Bundles = ( "com.apple.springboard", "com.apple.Preferences", "com.apple.mobilenotes", "com.apple.NotesShared" ); }; }
+{ Filter = { Bundles = ( "com.apple.springboard", "com.apple.Preferences", "com.apple.mobilenotes" ); }; }
