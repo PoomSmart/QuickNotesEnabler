@@ -3,7 +3,7 @@
 #import "../PSHeader/Misc.h"
 
 static BOOL PhoneTest() {
-    return NO;
+    return NO; // Make it return yes if you want to test on iPhone devices
 }
 
 extern bool _os_feature_enabled_impl(const char *domain, const char *feature);
