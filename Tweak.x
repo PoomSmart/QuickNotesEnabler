@@ -80,10 +80,10 @@ BOOL (*SBIsSystemNotesSupported)(void);
 %end
 
 static void bundleLoaded(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-	NSBundle* bundle = (__bridge NSBundle*)(object);
-	if ([bundle.bundleIdentifier isEqualToString:@"com.apple.ControlCenterServices"]) {
-		initControlCenterHooks();
-	}
+    NSBundle* bundle = (__bridge NSBundle*)(object);
+    if ([bundle.bundleIdentifier isEqualToString:@"com.apple.ControlCenterServices"]) {
+        initControlCenterHooks();
+    }
     if ([bundle.bundleIdentifier isEqualToString:@"com.apple.NotesSettings"]) {
         initNotesHooks();
     }
