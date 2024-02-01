@@ -1,6 +1,6 @@
 #import <MobileGestalt/MobileGestalt.h>
 #import <theos/IOSMacros.h>
-#import "../PSHeader/Misc.h"
+#import <PSHeader/Misc.h>
 
 static BOOL PhoneTest() {
     return NO; // Make it return yes if you want to test on iPhone devices
